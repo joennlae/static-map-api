@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { StaticMapDto } from './requests.dto';
+import { PuppeteerService } from './puppeteer.service';
 
 @Injectable()
 export class AppService {
+  constructor(public puppeteerService: PuppeteerService){
+  }
   getHello(): string {
     return 'Hello World!';
   }
@@ -27,6 +30,7 @@ export class AppService {
       finalWaypoints.push(tmp);
     }
     console.log('data', finalWaypoints, size, weight, color);
+    this.puppeteerService.createImage();
     return 'size: ' + size + ' color: ' + color + ' weight: ' + weight + ' waypoints: ' + finalWaypoints;
   }
 }
