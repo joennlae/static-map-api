@@ -35,4 +35,9 @@ export class AppService {
     await this.puppeteerService.createImage(finalWaypoints, size, weight, color);
     return createReadStream(path.join(__dirname, 'tmp/test.png'));
   }
+  async postStaticMap(size: Size, color: string, waypoints: number[][], weight: number) {
+    console.log('data', waypoints, size, weight, color);
+    await this.puppeteerService.createImage(waypoints, size, weight, color);
+    return createReadStream(path.join(__dirname, 'tmp/test.png'));
+  }
 }
