@@ -20,20 +20,7 @@ export class PuppeteerService {
         if (this.started) {
             try {
                 const page = await this.browser.newPage();
-                page.on('console', msg => console.log('PAGE LOG:', msg.text()))
-                /*page.on('response', async response => {
-                    const url = response.url();
-                    let text = await response.text()
-                    if (response.request().resourceType() === 'image') {
-                        response.buffer().then(file => {
-                            const fileName = url.split('/').pop();
-                            const filePath = path.resolve(__dirname + '/tmp', fileName);
-                            const writeStream = fs.createWriteStream(filePath);
-                            writeStream.write(file);
-                        })
-                            .catch(e => console.log(e));
-                    }
-                });*/
+                //page.on('console', msg => console.log('PAGE LOG:', msg.text()))
                 await page.addScriptTag({
                     path: "dist/image-rendering/leaflet-image.js"
                 }),
