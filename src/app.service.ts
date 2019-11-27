@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Res } from '@nestjs/common';
 import { StaticMapDto } from './requests.dto';
 import { PuppeteerService } from './puppeteer.service';
+import { createReadStream } from 'fs';
 
+import * as path from 'path';
 @Injectable()
 export class AppService {
   constructor(public puppeteerService: PuppeteerService){
@@ -9,7 +11,7 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
-  getStaticMap(query: StaticMapDto): string {
+  async getStaticMap(query: StaticMapDto) {
     console.log('query', query)
     let tmpSize = query.size.split('x');
     let size: Size = {
@@ -30,7 +32,7 @@ export class AppService {
       finalWaypoints.push(tmp);
     }
     console.log('data', finalWaypoints, size, weight, color);
-    this.puppeteerService.createImage();
-    return 'size: ' + size + ' color: ' + color + ' weight: ' + weight + ' waypoints: ' + finalWaypoints;
+    await this.puppeteerService.createImage(finalWaypoints, size, weight, color);
+    return createReadStream(path.join(__dirname, 'tmp/test.png'));
   }
 }

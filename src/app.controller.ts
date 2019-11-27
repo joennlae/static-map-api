@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, Res, Header } from '@nestjs/common';
 import { AppService } from './app.service';
 import { StaticMapDto } from './requests.dto';
 
@@ -11,7 +11,9 @@ export class AppController {
     return this.appService.getHello();
   }
   @Get('staticmap')
-  async getStaticMap(@Query() query: StaticMapDto): Promise<string>{
-    return await this.appService.getStaticMap(query);
+  @Header('Content-Type', 'image/png')
+  @Header('Content-Disposition', 'attachment; filename=lepicture.png')
+  async getStaticMap(@Res() response, @Query() query: StaticMapDto){
+    return (await this.appService.getStaticMap(query)).pipe(response);
   }
 }

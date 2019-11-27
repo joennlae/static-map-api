@@ -16,7 +16,7 @@ export class PuppeteerService {
         }
         catch (e) { console.log(e) }
     }
-    async createImage() {
+    async createImage(finalWaypoints: number[][], size: Size, weight: number, color: string) {
         if (this.started) {
             try {
                 const page = await this.browser.newPage();
@@ -37,22 +37,19 @@ export class PuppeteerService {
                 await page.addScriptTag({
                     path: "dist/image-rendering/leaflet-image.js"
                 }),
-                    await page.setContent(this.createHTML(), { waitUntil: 'networkidle2' });
-                await page.evaluate(() => {
+                    await page.setContent(this.createHTML(size), { waitUntil: 'networkidle2' });
+                console.log('points', finalWaypoints);
+                await page.evaluate(({ finalWaypoints, color }) => {
                     //@ts-ignore
                     var topoLayer = L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', { renderer: L.canvas() });
                     //@ts-ignore
                     var satelliteLayer = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { renderer: L.canvas() });
-
-                    var latlngs = [
-                        [45.51, -122.68],
-                        [37.77, -122.43],
-                        [34.04, -118.2]
-                    ];
+                    console.log('finalWaypoints', finalWaypoints);
+                    var latlngs = finalWaypoints;
                     //@ts-ignore
-                    var polyline = L.polyline(latlngs, { color: 'red' })
+                    var polyline = L.polyline(latlngs, { color: color })
                     // zoom the map to the polyline
-
+                    console.log('polyline', latlngs, polyline);
                     //@ts-ignore
                     var mymap = L.map('mapid', {
                         zoom: 10,
@@ -86,11 +83,11 @@ export class PuppeteerService {
                         img.id = 'createdImage';
                         document.getElementById('images').innerHTML = '';
                         document.getElementById('images').appendChild(img);
-                    }); 
-                })
+                    });
+                }, { finalWaypoints, color });
                 await page.waitFor('#createdImage');
                 let html = await page.evaluate(() => { document.getElementById('images') });
-                await page.screenshot({ path: 'test.png', clip:{width: 300, height: 200, x: 0, y: 0}});
+                await page.screenshot({ path: 'dist/tmp/test.png', clip: { width: size.width, height: size.height, x: 0, y: 0 } });
                 console.log('html', html);
                 await page.close()
             }
@@ -102,10 +99,10 @@ export class PuppeteerService {
             console.warn('Puppeteer not started');
         }
     }
-    createHTML(): string {
+    createHTML(size: Size): string {
         let html: string = `
         <head>
-  <script>L_PREFER_CANVAS = true; var status = false;</script>
+  <script>L_PREFER_CANVAS = true; </script>
  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
    crossorigin=""/>
@@ -114,7 +111,7 @@ export class PuppeteerService {
    crossorigin=""></script>
     <script src="image-rendering/leaflet-image.js"></script>
 <style>html, body { height: 100%; margin: 0px;}
-        #mapid { height: ` + 200 + `px; width: ` + 300 + `px;}
+        #mapid { height: ` + size.height + `px; width: ` + size.width + `px;}
 </style>
 </head>
 
