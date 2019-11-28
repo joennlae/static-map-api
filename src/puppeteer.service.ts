@@ -9,7 +9,7 @@ export class PuppeteerService {
     }
     async init() {
         try {
-            this.browser = await puppeteer.launch({ headless: true, args: ['--start-fullscreen'] });
+            this.browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
             this.started = true;
             this.browser.newPage()
             console.log('puppeteer started');

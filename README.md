@@ -65,3 +65,10 @@ heapTotal 22.75 MB
 heapUsed 16.69 MB
 external 1.34 MB
 ```
+
+## deploy
+
+on sentry server currently
+
+`ssh root@206.81.18.151`
+
