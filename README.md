@@ -80,7 +80,9 @@ server is run with npm forever package
 ```bash
 nvm use 10 
 forever start dist/main.js
-
+#or 
+yarn forever list
+yarn forever start
 #use to kill
 forever list
 forever stop ....
