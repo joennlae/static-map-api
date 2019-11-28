@@ -73,3 +73,9 @@ on sentry server currently
 `ssh root@206.81.18.151`
 
 * https://www.digitalocean.com/community/questions/can-t-reach-my-node-js-application
+
+server is run with npm forever package
+* https://www.dev2qa.com/how-to-run-node-js-server-in-background/
+
+```
+nvm use 10 
