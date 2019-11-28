@@ -53,10 +53,8 @@ export class PuppeteerService {
                     };
                     //@ts-ignore
                     L.control.layers(baseMaps, overlayMaps).addTo(mymap);
-                    console.log('test');
                     //@ts-ignore
                     leafletImage(mymap, function (err, canvas) {
-                        console.log('function started');
                         // now you have canvas
                         // example thing to do with that canvas:
                         var img = document.createElement('img');
@@ -72,7 +70,6 @@ export class PuppeteerService {
                 await page.waitFor('#createdImage');
                 let html = await page.evaluate(() => { document.getElementById('images') });
                 await page.screenshot({ path: 'dist/tmp/test.png', clip: { width: size.width, height: size.height, x: 0, y: 0 } });
-                console.log('html', html);
                 await page.close()
             }
             catch (e) {
