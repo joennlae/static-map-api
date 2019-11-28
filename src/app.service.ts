@@ -1,5 +1,5 @@
 import { Injectable, Res } from '@nestjs/common';
-import { StaticMapDto } from './requests.dto';
+import { StaticMapGETDto } from './requests.dto';
 import { PuppeteerService } from './puppeteer.service';
 import { createReadStream } from 'fs';
 
@@ -11,7 +11,7 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
-  async getStaticMap(query: StaticMapDto) {
+  async getStaticMap(query: StaticMapGETDto) {
     console.log('query', query)
     let tmpSize = query.size.split('x');
     let size: Size = {

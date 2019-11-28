@@ -68,7 +68,6 @@ export class PuppeteerService {
                     });
                 }, { finalWaypoints, color });
                 await page.waitFor('#createdImage');
-                let html = await page.evaluate(() => { document.getElementById('images') });
                 await page.screenshot({ path: 'dist/tmp/test.png', clip: { width: size.width, height: size.height, x: 0, y: 0 } });
                 await page.close()
             }

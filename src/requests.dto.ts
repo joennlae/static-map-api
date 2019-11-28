@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class StaticMapDto {
+export class StaticMapGETDto {
 
     @IsNotEmpty()
     @IsString()
