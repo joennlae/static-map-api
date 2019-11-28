@@ -72,3 +72,4 @@ on sentry server currently
 
 `ssh root@206.81.18.151`
 
+* https://www.digitalocean.com/community/questions/can-t-reach-my-node-js-application
