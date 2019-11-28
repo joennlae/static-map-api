@@ -77,5 +77,12 @@ on sentry server currently
 server is run with npm forever package
 * https://www.dev2qa.com/how-to-run-node-js-server-in-background/
 
-```
+```bash
 nvm use 10 
+forever start dist/main.js
+
+#use to kill
+forever list
+forever stop ....
+
+```
