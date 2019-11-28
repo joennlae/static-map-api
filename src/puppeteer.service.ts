@@ -23,20 +23,17 @@ export class PuppeteerService {
                 //page.on('console', msg => console.log('PAGE LOG:', msg.text()))
                 await page.addScriptTag({
                     path: "dist/image-rendering/leaflet-image.js"
-                }),
-                    await page.setContent(this.createHTML(size), { waitUntil: 'networkidle2' });
-                console.log('points', finalWaypoints);
+                })
+                await page.setContent(this.createHTML(size), { waitUntil: 'networkidle2' });
                 await page.evaluate(({ finalWaypoints, color }) => {
                     //@ts-ignore
                     var topoLayer = L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', { renderer: L.canvas() });
                     //@ts-ignore
                     var satelliteLayer = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { renderer: L.canvas() });
-                    console.log('finalWaypoints', finalWaypoints);
                     var latlngs = finalWaypoints;
                     //@ts-ignore
                     var polyline = L.polyline(latlngs, { color: color })
                     // zoom the map to the polyline
-                    console.log('polyline', latlngs, polyline);
                     //@ts-ignore
                     var mymap = L.map('mapid', {
                         zoom: 10,
