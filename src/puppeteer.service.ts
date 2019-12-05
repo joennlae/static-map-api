@@ -9,7 +9,7 @@ export class PuppeteerService {
     }
     async init() {
         try {
-            this.browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+            this.browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-web-security'] });
             this.started = true;
             this.browser.newPage()
             console.log('puppeteer started');
@@ -25,27 +25,27 @@ export class PuppeteerService {
                     path: "dist/image-rendering/leaflet-image.js"
                 })
                 await page.setContent(this.createHTML(size), { waitUntil: 'networkidle2' });
-                await page.evaluate(({ finalWaypoints, color }) => {
+                await page.evaluate(({ finalWaypoints, color, weight }) => {
                     //@ts-ignore
-                    var topoLayer = L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', { renderer: L.canvas() });
+                    var bwLayer = L.tileLayer('https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {renderer: L.canvas()});
                     //@ts-ignore
-                    var satelliteLayer = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { renderer: L.canvas() });
+                    //var topoLayer = L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', {renderer: L.canvas()});
+                    //@ts-ignore
                     var latlngs = finalWaypoints;
                     //@ts-ignore
-                    var polyline = L.polyline(latlngs, { color: color })
+                    var polyline = L.polyline(latlngs, { color: color, weight: weight })
                     // zoom the map to the polyline
                     //@ts-ignore
                     var mymap = L.map('mapid', {
                         zoom: 10,
-                        layers: [topoLayer, polyline],
+                        layers: [bwLayer, polyline],
                         preferCanvas: true
                     }).setView([51.505, -0.09], 13);
 
                     mymap.fitBounds(polyline.getBounds());
 
                     var baseMaps = {
-                        "Map": topoLayer,
-                        "Satellite": satelliteLayer
+                        "Map": bwLayer,
                     };
 
                     var overlayMaps = {
@@ -66,7 +66,7 @@ export class PuppeteerService {
                         document.getElementById('images').innerHTML = '';
                         document.getElementById('images').appendChild(img);
                     });
-                }, { finalWaypoints, color });
+                }, { finalWaypoints, color, weight });
                 await page.waitFor('#createdImage');
                 await page.screenshot({ path: 'dist/tmp/test.png', clip: { width: size.width, height: size.height, x: 0, y: 0 } });
                 await page.close()

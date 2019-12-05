@@ -19,7 +19,8 @@
   <div id="images"></div>
 <script>
 
-var topoLayer = L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', {renderer: L.canvas()});
+var bwLayer = L.tileLayer('https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {render: L.canvas()});
+//var topoLayer = L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', {renderer: L.canvas()});
 var satelliteLayer = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {renderer: L.canvas()});
 
 var latlngs = [
@@ -33,14 +34,14 @@ var polyline = L.polyline(latlngs, {color: 'red'})
 
 var mymap = L.map('mapid', {
     zoom: 10,
-    layers: [topoLayer, polyline],
+    layers: [bwLayer, polyline],
     preferCanvas: true
 }).setView([51.505, -0.09], 13);
 
 mymap.fitBounds(polyline.getBounds());
 
 var baseMaps = {
-    "Map": topoLayer,
+    "Map": bwLayer,
     "Satellite": satelliteLayer
 };
 
