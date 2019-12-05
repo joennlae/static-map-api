@@ -16,7 +16,7 @@ export class PuppeteerService {
         }
         catch (e) { console.log(e) }
     }
-    async createImage(finalWaypoints: number[][], size: Size, weight: number, color: string) {
+    async createImage(finalWaypoints: number[][], size: Size, weight: number, color: string, time: number) {
         if (this.started) {
             try {
                 const page = await this.browser.newPage();
@@ -27,7 +27,7 @@ export class PuppeteerService {
                 await page.setContent(this.createHTML(size), { waitUntil: 'networkidle2' });
                 await page.evaluate(({ finalWaypoints, color, weight }) => {
                     //@ts-ignore
-                    var bwLayer = L.tileLayer('https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {renderer: L.canvas()});
+                    var bwLayer = L.tileLayer('https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', { renderer: L.canvas() });
                     //@ts-ignore
                     //var topoLayer = L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', {renderer: L.canvas()});
                     //@ts-ignore
@@ -68,7 +68,7 @@ export class PuppeteerService {
                     });
                 }, { finalWaypoints, color, weight });
                 await page.waitFor('#createdImage');
-                await page.screenshot({ path: 'dist/tmp/test.png', clip: { width: size.width, height: size.height, x: 0, y: 0 } });
+                await page.screenshot({ path: 'dist/tmp/created_image_' + time + '.png', clip: { width: size.width, height: size.height, x: 0, y: 0 } });
                 await page.close()
             }
             catch (e) {

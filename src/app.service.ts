@@ -1,21 +1,21 @@
 import { Injectable, Res } from '@nestjs/common';
 import { StaticMapGETDto } from './requests.dto';
 import { PuppeteerService } from './puppeteer.service';
-import { createReadStream } from 'fs';
+import { createReadStream, unlink} from 'fs';
 
 import * as path from 'path';
 @Injectable()
 export class AppService {
-  constructor(public puppeteerService: PuppeteerService){
+  constructor(public puppeteerService: PuppeteerService) {
   }
   getHello(): string {
     return 'Hello World!';
   }
-  async getStaticMap(query: StaticMapGETDto) {
+  async getStaticMap(query: StaticMapGETDto, time: number) {
     console.log('query', query)
     let tmpSize = query.size.split('x');
     let size: Size = {
-      width: parseInt(tmpSize[0]), 
+      width: parseInt(tmpSize[0]),
       height: parseInt(tmpSize[1])
     }
     let path_splitted = query.path.split('|');
@@ -31,11 +31,13 @@ export class AppService {
       ]
       finalWaypoints.push(tmp);
     }
-    await this.puppeteerService.createImage(finalWaypoints, size, weight, color);
-    return createReadStream(path.join(__dirname, 'tmp/test.png'));
+    await this.puppeteerService.createImage(finalWaypoints, size, weight, color, time);
+    let file = createReadStream(path.join(__dirname, '/tmp/created_image_' + time + '.png'));
+    return file;
   }
-  async postStaticMap(size: Size, color: string, waypoints: number[][], weight: number) {
-    await this.puppeteerService.createImage(waypoints, size, weight, color);
-    return createReadStream(path.join(__dirname, 'tmp/test.png'));
+  async postStaticMap(size: Size, color: string, waypoints: number[][], weight: number, time: number) {
+    await this.puppeteerService.createImage(waypoints, size, weight, color, time);
+    let file = createReadStream(path.join(__dirname, '/tmp/created_image_' + time + '.png'));
+    return file;
   }
 }
