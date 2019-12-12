@@ -20,16 +20,19 @@ export class PuppeteerService {
         if (this.started) {
             try {
                 const page = await this.browser.newPage();
-                //page.on('console', msg => console.log('PAGE LOG:', msg.text()))
+                page.on('console', msg => console.log('PAGE LOG:', msg.text()))
                 await page.addScriptTag({
                     path: "dist/image-rendering/leaflet-image.js"
+                })
+                await page.addScriptTag({
+                    path: "dist/image-rendering/leaflet-src.js"
                 })
                 await page.setContent(this.createHTML(size), { waitUntil: 'networkidle2' });
                 await page.evaluate(({ finalWaypoints, color, weight }) => {
                     //@ts-ignore
-                    var bwLayer = L.tileLayer('https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', { renderer: L.canvas() });
+                    //var bwLayer = L.tileLayer('https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', { renderer: L.canvas() });
                     //@ts-ignore
-                    //var topoLayer = L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', {renderer: L.canvas()});
+                    var bwLayer = L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', {renderer: L.canvas()});
                     //@ts-ignore
                     var latlngs = finalWaypoints;
                     //@ts-ignore
@@ -38,7 +41,7 @@ export class PuppeteerService {
                     //@ts-ignore
                     var mymap = L.map('mapid', {
                         zoom: 10,
-                        layers: [bwLayer, polyline],
+                        layers: [polyline, bwLayer],
                         preferCanvas: true
                     }).setView([51.505, -0.09], 13);
 
@@ -82,14 +85,10 @@ export class PuppeteerService {
     createHTML(size: Size): string {
         let html: string = `
         <head>
-  <script>L_PREFER_CANVAS = true; </script>
- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
-   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-   crossorigin=""/>
- <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
-   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
-   crossorigin=""></script>
-    <script src="image-rendering/leaflet-image.js"></script>
+<script>L_PREFER_CANVAS = true; </script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+crossorigin=""/>
 <style>html, body { height: 100%; margin: 0px;}
         #mapid { height: ` + size.height + `px; width: ` + size.width + `px;}
 </style>
