@@ -31,8 +31,10 @@ export class PuppeteerService {
                 await page.evaluate(({ finalWaypoints, color, weight }) => {
                     //@ts-ignore
                     //var bwLayer = L.tileLayer('https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', { renderer: L.canvas() });
+                    let loadBalancer = ['a', 'b', 'c'];
+                    let loadBalancerSelector = Math.floor(Math.random() * 3)
                     //@ts-ignore
-                    var bwLayer = L.tileLayer('https://a.tile.opentopomap.org/{z}/{x}/{y}.png', {renderer: L.canvas()});
+                    var bwLayer = L.tileLayer('https://' + loadBalancer[loadBalancerSelector] + '.tile.opentopomap.org/{z}/{x}/{y}.png', { renderer: L.canvas() });
                     //@ts-ignore
                     var latlngs = finalWaypoints;
                     //@ts-ignore
